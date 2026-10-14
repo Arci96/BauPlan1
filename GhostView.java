@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
@@ -86,6 +87,14 @@ final class GhostView {
         refresh();
     }
 
+    /** Wasser und Lava haben kein Block-Modell und waeren als Hologramm unsichtbar - daher Ersatzbloecke. */
+    private static BlockData displayData(BlockData d) {
+        Material m = d.getMaterial();
+        if (m == Material.WATER) return Material.LIGHT_BLUE_STAINED_GLASS.createBlockData();
+        if (m == Material.LAVA) return Material.ORANGE_STAINED_GLASS.createBlockData();
+        return d;
+    }
+
     private static long key(int x, int y, int z) {
         return (((long) x & 0x3FFFFFFL) << 38) | (((long) z & 0x3FFFFFFL) << 12) | ((long) (y + 2048) & 0xFFFL);
     }
@@ -117,7 +126,12 @@ final class GhostView {
                     int wx = ox + x, wy = oy + y, wz = oz + z;
                     if (!world.isChunkLoaded(wx >> 4, wz >> 4)) continue;
                     Block b = world.getBlockAt(wx, wy, wz);
-                    if (b.getType() == m) continue; // schon gebaut
+                    boolean fluid = m == Material.WATER || m == Material.LAVA;
+                    if (fluid && d instanceof Levelled pl && pl.getLevel() != 0) continue; // nur Quellbloecke zeigen
+                    if (b.getType() == m) {
+                        // Fluessigkeit gilt nur als gebaut, wenn dort ein Quellblock steht
+                        if (!fluid || !(b.getBlockData() instanceof Levelled wl) || wl.getLevel() == 0) continue;
+                    }
                     if (!(b.isEmpty() || b.isReplaceable())) continue; // etwas anderes steht im Weg
                     missing++;
                     missingMaterials.merge(d.getPlacementMaterial(), 1, Integer::sum);
@@ -128,7 +142,7 @@ final class GhostView {
                         truncated = true;
                         continue;
                     }
-                    desired.put(key(wx, wy, wz), d);
+                    desired.put(key(wx, wy, wz), displayData(d));
                 }
             }
         }
