@@ -1,0 +1,29 @@
+name: Build BauPlan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Java 21 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Plugin bauen
+        run: mvn -B clean package
+
+      - name: Jar hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: BauPlan
+          path: target/BauPlan.jar

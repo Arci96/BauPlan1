@@ -1,0 +1,10 @@
+# Maximale Anzahl gleichzeitig angezeigter Hologramm-Bloecke pro Spieler
+max-ghosts: 6000
+# Nur Bloecke in diesem Umkreis (horizontal, in Bloecken) um den Spieler anzeigen
+ghost-radius: 48
+# Groesse der Hologramm-Bloecke (0.1 - 1.0). Kleiner = man sieht, dass es nur ein Plan ist
+ghost-scale: 0.6
+# Wie oft die Anzeige aktualisiert wird (in Ticks, 20 = 1 Sekunde)
+refresh-ticks: 40
+# Maximale Groesse (Bloecke) beim Speichern eines Bereichs
+max-capture-volume: 1000000

@@ -1,0 +1,18 @@
+name: BauPlan
+version: 1.0.0
+main: de.bauplan.BauPlanPlugin
+api-version: '1.21'
+description: Bau-Plaene speichern, importieren und als Hologramm in der Welt anzeigen
+commands:
+  bauplan:
+    description: BauPlan Hauptbefehl
+    usage: /bauplan help
+    aliases: [bp]
+    permission: bauplan.use
+permissions:
+  bauplan.use:
+    description: Darf BauPlan benutzen
+    default: op
+  bauplan.build:
+    description: Darf Plaene direkt einbauen, rueckgaengig machen und herunterladen
+    default: op
